@@ -11,14 +11,13 @@ package awt.calculator;
  */
 import java.awt.*;
 import java.awt.event.*;
-
-import javax.xml.crypto.Data;
+import java.lang.Math;
 
 public class AWTCalculator implements ActionListener {
 
     String[] inputs = new String[3];
     Frame frame;
-    Button b0, b1, b2, b3, b4, b5, b6, b7, b8, b9, bAdd, bSub, bMul, bDiv, bEq, bDot, bRoot, bClear, bDel;
+    Button b0, b1, b2, b3, b4, b5, b6, b7, b8, b9, bAdd, bSub, bMul, bDiv, bEq, bSqrt, bClear, bDel, bPer;
     Panel mainPanel;
     Panel numberPanel;
     TextField textField;
@@ -36,15 +35,17 @@ public class AWTCalculator implements ActionListener {
         mainPanel = new Panel();
         mainPanel.setBackground(Color.LIGHT_GRAY);
         textField = new TextField();
-        textField.setColumns(20);
+        textField.setColumns(15);
         textField.setText("0");
         textField.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
-        Font font = new Font("Arial", Font.PLAIN, 18);
-        textField.setFont(font);
+        Font font1 = new Font("Arial", Font.PLAIN, 30);
+        Font font2 = new Font("Arial", Font.PLAIN, 18);
+        textField.setFont(font1);
         textField.setEditable(false);
         textField.setBackground(Color.BLACK);
         textField.setBackground(Color.WHITE);
         mainPanel.setLayout(new BorderLayout());
+        mainPanel.setFont(font2);
 
         // ========== Number Panel ==========
 
@@ -57,11 +58,17 @@ public class AWTCalculator implements ActionListener {
         b0 = new Button("0");
         b0.addActionListener(this);
 
-        bDot = new Button(".");
-        bDot.addActionListener(this);
+        bSqrt = new Button("√");
+        bSqrt.addActionListener(this);
 
-        bDot.setBackground(Color.gray);
-        bDot.setForeground(Color.WHITE);
+        bSqrt.setBackground(Color.gray);
+        bSqrt.setForeground(Color.WHITE);
+
+        bPer = new Button("%");
+        bPer.addActionListener(this);
+
+        bPer.setBackground(Color.gray);
+        bPer.setForeground(Color.WHITE);
 
         b1 = new Button("1");
         b1.addActionListener(this);
@@ -155,7 +162,7 @@ public class AWTCalculator implements ActionListener {
         bEq.setBackground(Color.lightGray);
         bEq.setForeground(Color.DARK_GRAY);
 
-        b0.setPreferredSize(new Dimension(60, 40));
+        b0.setPreferredSize(new Dimension(80, 60));
         // Row 1
         numberPanel.add(b1);
         numberPanel.add(b2);
@@ -172,15 +179,15 @@ public class AWTCalculator implements ActionListener {
         numberPanel.add(b9);
         numberPanel.add(bMul);
         // Row 4
-        numberPanel.add(bDot);
+        numberPanel.add(bSqrt);
         numberPanel.add(b0);
-        numberPanel.add(bDel);
+        numberPanel.add(bPer);
         numberPanel.add(bDiv);
         // Row 5
 
         Panel lastRow = new Panel(new GridLayout(1, 2));
 
-        bEq.setPreferredSize(new Dimension(120, 40));
+        bEq.setPreferredSize(new Dimension(160, 60));
         lastRow.add(bClear);
         lastRow.add(bEq);
         mainPanel.add(lastRow, BorderLayout.SOUTH);
@@ -192,6 +199,40 @@ public class AWTCalculator implements ActionListener {
 
         Menu More = new Menu("More");
         Menu About = new Menu("About");
+        MenuItem aboutMenuItem = new MenuItem("Creator");
+        aboutMenuItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Create and show the alert dialog
+                Dialog alert = new Dialog(frame, "Creator", true);
+                alert.setSize(100, 300);
+                int x = frame.getX() + frame.getWidth() / 2 - alert.getWidth() / 2;
+                int y = frame.getY() + frame.getHeight() / 2 - alert.getHeight() / 2;
+                alert.setLocation(x, y);
+                Label message1 = new Label(
+                        "Hi, there. I am Harshana Chathuranga.");
+                message1.setAlignment(Label.CENTER);
+                Label message2 = new Label(
+                        "An Undergraduate in JavaInstitute for Advanced Technology");
+                message2.setAlignment(Label.CENTER);
+
+                Button okButton = new Button("OK");
+                okButton.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        alert.dispose(); // Close the dialog
+                    }
+                });
+                Panel panel = new Panel(new GridLayout(3, 1));
+                panel.add(message1);
+                panel.add(message2);
+                panel.add(okButton);
+                alert.add(panel);
+                alert.pack();
+                alert.setVisible(true);
+            }
+        });
+        About.add(aboutMenuItem);
 
         MenuItem Temperature = new MenuItem("Temperature");
         MenuItem Length = new MenuItem("Length");
@@ -309,6 +350,20 @@ public class AWTCalculator implements ActionListener {
         }
         if (pressed.equals(b9)) {
             textField.setText(textField.getText() + b9.getLabel());
+        }
+        if (pressed.equals(bSqrt)) {
+
+            double value = Double.parseDouble(textField.getText());
+            value = Math.sqrt(value);
+            String sqrt = String.valueOf(value);
+            textField.setText(sqrt);
+        }
+
+        if (pressed.equals(bPer)) {
+            Double value = Double.parseDouble(textField.getText());
+            value = value * 0.01;
+            String percentage = String.valueOf(value);
+            textField.setText(percentage);
         }
 
         if (inputs[1] != "")
